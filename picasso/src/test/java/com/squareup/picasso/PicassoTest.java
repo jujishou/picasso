@@ -10,7 +10,7 @@ import org.mockito.Mock;
 import org.robolectric.RobolectricTestRunner;
 
 import static com.squareup.picasso.Picasso.Listener;
-import static com.squareup.picasso.TestUtils.KEY_1;
+import static com.squareup.picasso.TestUtils.URI_KEY_1;
 import static com.squareup.picasso.TestUtils.URI_1;
 import static com.squareup.picasso.TestUtils.mockImageViewTarget;
 import static com.squareup.picasso.TestUtils.mockRequest;
@@ -38,13 +38,13 @@ public class PicassoTest {
   }
 
   @Test public void submitWithNullTargetSkips() {
-    Request request = mockRequest(KEY_1, URI_1, null);
+    Request request = mockRequest(URI_KEY_1, URI_1, null);
     picasso.submit(request);
     verifyZeroInteractions(dispatcher);
   }
 
-  @Test public void blah() {
-    Request request = mockRequest(KEY_1, URI_1, mockImageViewTarget());
+  @Test public void submitWithTargetInvokesDispatcher() {
+    Request request = mockRequest(URI_KEY_1, URI_1, mockImageViewTarget());
     picasso.submit(request);
     verify(dispatcher).dispatchSubmit(request);
   }
@@ -119,5 +119,4 @@ public class PicassoTest {
     } catch (IllegalStateException expected) {
     }
   }
-
 }

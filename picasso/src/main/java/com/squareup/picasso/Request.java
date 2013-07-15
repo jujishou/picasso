@@ -116,4 +116,8 @@ class Request {
   String getKey() {
     return key;
   }
+
+  int getResourceId() {
+    return resourceId;
+  }
 }

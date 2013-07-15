@@ -108,7 +108,7 @@ abstract class BitmapHunter implements Runnable {
 
   static BitmapHunter forRequest(Context context, Dispatcher dispatcher, Request request,
       Downloader downloader) {
-    if (request.resourceId != 0) {
+    if (request.getResourceId() != 0) {
       return new ResourceBitmapHunter(context, dispatcher, request);
     }
     String scheme = request.getUri().getScheme();

@@ -11,8 +11,8 @@ import org.mockito.Mock;
 import org.robolectric.RobolectricTestRunner;
 
 import static com.squareup.picasso.TestUtils.BITMAP_1;
-import static com.squareup.picasso.TestUtils.KEY_1;
-import static com.squareup.picasso.TestUtils.KEY_2;
+import static com.squareup.picasso.TestUtils.URI_KEY_1;
+import static com.squareup.picasso.TestUtils.URI_KEY_2;
 import static com.squareup.picasso.TestUtils.URI_1;
 import static com.squareup.picasso.TestUtils.URI_2;
 import static com.squareup.picasso.TestUtils.mockHunter;
@@ -42,15 +42,15 @@ public class DispatcherTest {
   }
 
   @Test public void performSubmitWithNewRequestQueuesHunter() {
-    Request request = mockRequest(KEY_1, URI_1);
+    Request request = mockRequest(URI_KEY_1, URI_1);
     dispatcher.performSubmit(request);
     assertThat(dispatcher.hunterMap).hasSize(1);
     verify(service).submit(any(BitmapHunter.class));
   }
 
   @Test public void performSubmitWithTwoDifferentRequestsQueuesHunters() {
-    Request request1 = mockRequest(KEY_1, URI_1);
-    Request request2 = mockRequest(KEY_2, URI_2);
+    Request request1 = mockRequest(URI_KEY_1, URI_1);
+    Request request2 = mockRequest(URI_KEY_2, URI_2);
     dispatcher.performSubmit(request1);
     dispatcher.performSubmit(request2);
     assertThat(dispatcher.hunterMap).hasSize(2);
@@ -58,8 +58,8 @@ public class DispatcherTest {
   }
 
   @Test public void performSubmitWithExistingRequestAttachesToHunter() {
-    Request request1 = mockRequest(KEY_1, URI_1);
-    Request request2 = mockRequest(KEY_1, URI_1);
+    Request request1 = mockRequest(URI_KEY_1, URI_1);
+    Request request2 = mockRequest(URI_KEY_1, URI_1);
     dispatcher.performSubmit(request1);
     dispatcher.performSubmit(request2);
     assertThat(dispatcher.hunterMap).hasSize(1);
@@ -67,7 +67,7 @@ public class DispatcherTest {
   }
 
   @Test public void performSubmitWithCachedPerformsComplete() {
-    Request request = mockRequest(KEY_1, URI_1);
+    Request request = mockRequest(URI_KEY_1, URI_1);
     when(cache.get(request.getKey())).thenReturn(BITMAP_1);
     dispatcher.performSubmit(request);
     assertThat(dispatcher.hunterMap).isEmpty();
@@ -76,7 +76,7 @@ public class DispatcherTest {
   }
 
   @Test public void performCompleteSetsResultInCache() {
-    BitmapHunter hunter = mockHunter(KEY_1, BITMAP_1, false);
+    BitmapHunter hunter = mockHunter(URI_KEY_1, BITMAP_1, false);
     dispatcher.performComplete(hunter);
     assertThat(dispatcher.hunterMap).isEmpty();
     verify(cache).set(hunter.getKey(), hunter.getResult());
@@ -84,7 +84,7 @@ public class DispatcherTest {
   }
 
   @Test public void performCompleteWithSkipCacheDoesNotCache() {
-    BitmapHunter hunter = mockHunter(KEY_1, BITMAP_1, true);
+    BitmapHunter hunter = mockHunter(URI_KEY_1, BITMAP_1, true);
     dispatcher.performComplete(hunter);
     assertThat(dispatcher.hunterMap).isEmpty();
     verifyZeroInteractions(cache);
@@ -92,8 +92,8 @@ public class DispatcherTest {
   }
 
   @Test public void performErrorCleansUp() {
-    Request request = mockRequest(KEY_1, URI_1);
-    BitmapHunter hunter = mockHunter(KEY_1, BITMAP_1, false);
+    Request request = mockRequest(URI_KEY_1, URI_1);
+    BitmapHunter hunter = mockHunter(URI_KEY_1, BITMAP_1, false);
     dispatcher.performSubmit(request);
     assertThat(dispatcher.hunterMap).hasSize(1);
     dispatcher.performError(hunter);
@@ -101,7 +101,7 @@ public class DispatcherTest {
   }
 
   @Test public void performRetryTwoTimesBeforeError() {
-    BitmapHunter hunter = mockHunter(KEY_1, BITMAP_1, false);
+    BitmapHunter hunter = mockHunter(URI_KEY_1, BITMAP_1, false);
     dispatcher.performRetry(hunter);
     verify(service).submit(hunter);
     dispatcher.performRetry(hunter);
